@@ -25,9 +25,24 @@ import net.minecraft.util.Uuids;
  * @param members a mapping of player {@link UUID}s to {@link PartyRole}s, this field will not be null when {@link #inParty} returns true
  */
 public record PartyInfoS2CPacket(boolean inParty, @Nullable @Unmodifiable Map<UUID, PartyRole> members) implements HypixelS2CPacket {
-	public static final CustomPayload.Id<HypixelS2CPacket> ID = new CustomPayload.Id<>(Identifier.of("hypixel", "party_info"));
-	private static final PacketCodec<RegistryByteBuf, PartyInfoS2CPacket> IN_PARTY_PACKET_CODEC = PacketCodec.tuple(PacketCodecs.map(Object2ReferenceOpenHashMap::new, Uuids.PACKET_CODEC, PacketCodecs.indexed(i -> PartyRole.values()[i], PartyRole::ordinal)), PartyInfoS2CPacket::members, PartyInfoS2CPacket::new);
-	public static final PacketCodec<RegistryByteBuf, PartyInfoS2CPacket> PACKET_CODEC = PacketCodecUtils.dispatchConditionally(IN_PARTY_PACKET_CODEC, PacketCodec.unit(new PartyInfoS2CPacket(false, null)));
+
+	public static final CustomPayload.Id<HypixelS2CPacket> ID = new CustomPayload.Id<>(
+			Identifier.of("hypixel", "party_info")
+	);
+
+	private static final PacketCodec<RegistryByteBuf, PartyInfoS2CPacket> IN_PARTY_PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.map(
+					Object2ReferenceOpenHashMap::new,
+					Uuids.PACKET_CODEC,
+					PacketCodecs.indexed(i -> PartyRole.values()[i], PartyRole::ordinal)
+			),
+			PartyInfoS2CPacket::members,
+			PartyInfoS2CPacket::new
+	);
+
+	public static final PacketCodec<RegistryByteBuf, PartyInfoS2CPacket> PACKET_CODEC = PacketCodecUtils.dispatchConditionally(
+			IN_PARTY_PACKET_CODEC, PacketCodec.unit(new PartyInfoS2CPacket(false, null))
+	);
 
 	private PartyInfoS2CPacket(Map<UUID, PartyRole> members) {
 		this(true, Collections.unmodifiableMap(members));

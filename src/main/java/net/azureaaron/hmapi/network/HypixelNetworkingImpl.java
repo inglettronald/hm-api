@@ -1,19 +1,6 @@
 package net.azureaaron.hmapi.network;
 
-import java.util.stream.Collectors;
-
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import org.jetbrains.annotations.ApiStatus;
-
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMaps;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import net.azureaaron.hmapi.events.HypixelPacketEvents;
 import net.azureaaron.hmapi.network.packet.c2s.HypixelC2SPacket;
 import net.azureaaron.hmapi.network.packet.c2s.RegisterC2SPacket;
@@ -23,8 +10,16 @@ import net.azureaaron.hmapi.network.packet.v1.s2c.LocationUpdateS2CPacket;
 import net.azureaaron.hmapi.network.packet.v1.s2c.PlayerInfoS2CPacket;
 import net.azureaaron.hmapi.network.packet.v2.s2c.PartyInfoS2CPacket;
 import net.azureaaron.hmapi.utils.PacketSendResult;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.stream.Collectors;
 
 @ApiStatus.Internal
 public class HypixelNetworkingImpl {
@@ -52,22 +47,26 @@ public class HypixelNetworkingImpl {
 	}
 
 	public static void bootstrap() {
-		registerPacket(HelloS2CPacket.ID, HypixelPacketEvents.HELLO, HelloS2CPacket.PACKET_CODEC);
-		registerPacket(PartyInfoS2CPacket.ID, HypixelPacketEvents.PARTY_INFO, PartyInfoS2CPacket.PACKET_CODEC);
-		registerPacket(PlayerInfoS2CPacket.ID, HypixelPacketEvents.PLAYER_INFO, PlayerInfoS2CPacket.PACKET_CODEC);
-		registerPacket(LocationUpdateS2CPacket.ID, HypixelPacketEvents.LOCATION_UPDATE, LocationUpdateS2CPacket.PACKET_CODEC);
+		registerPacket(HelloS2CPacket.class, HelloS2CPacket.ID, HypixelPacketEvents.HELLO, HelloS2CPacket.PACKET_CODEC);
+		registerPacket(PartyInfoS2CPacket.class, PartyInfoS2CPacket.ID, HypixelPacketEvents.PARTY_INFO, PartyInfoS2CPacket.PACKET_CODEC);
+		registerPacket(PlayerInfoS2CPacket.class, PlayerInfoS2CPacket.ID, HypixelPacketEvents.PLAYER_INFO, PlayerInfoS2CPacket.PACKET_CODEC);
+		registerPacket(LocationUpdateS2CPacket.class, LocationUpdateS2CPacket.ID, HypixelPacketEvents.LOCATION_UPDATE, LocationUpdateS2CPacket.PACKET_CODEC);
 
-		// Send initial event registration
+		// Send initial edvent registration
 		HypixelPacketEvents.HELLO.register(p -> sendEventRegistrations());
 	}
 
 	@SuppressWarnings("unchecked")
     private static void registerPacket(
+			Class<? extends HypixelS2CPacket> clazz,
 			CustomPayload.Id<HypixelS2CPacket> id,
 			Event<HypixelPacketEvents.PacketCallback> event,
 			PacketCodec<RegistryByteBuf, ? extends HypixelS2CPacket> codec
 	) {
-		PayloadTypeRegistry.playS2C().register(id, (PacketCodec<RegistryByteBuf, HypixelS2CPacket>) codec);
+		PayloadTypeRegistry.playS2C().register(
+				id,
+				(PacketCodec<RegistryByteBuf, HypixelS2CPacket>) codec
+		);
 		ClientPlayNetworking.registerGlobalReceiver(id, (payload, context) ->
 				context.client().execute(() -> event.invoker().onPacket(payload)));
 	}

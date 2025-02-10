@@ -21,12 +21,19 @@ import net.minecraft.util.Identifier;
  * @see <a href="https://github.com/HypixelDev/HypixelData/tree/master/src/main/java/net/hypixel/data/type">Hypixel Data</a> ServerType varient enum constant names for possible {@link #serverType} values.
  */
 public record LocationUpdateS2CPacket(String serverName, Optional<String> serverType, Optional<String> lobbyName, Optional<String> mode, Optional<String> map) implements HypixelS2CPacket {
-	public static final CustomPayload.Id<HypixelS2CPacket> ID = new CustomPayload.Id<>(Identifier.of("hyevent", "location"));
-	public static final PacketCodec<RegistryByteBuf, LocationUpdateS2CPacket> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.STRING, LocationUpdateS2CPacket::serverName,
+
+	public static final CustomPayload.Id<HypixelS2CPacket> ID = new CustomPayload.Id<>(
+			Identifier.of("hyevent", "location")
+	);
+
+	public static final PacketCodec<RegistryByteBuf, LocationUpdateS2CPacket> PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.STRING, LocationUpdateS2CPacket::serverName,
 			PacketCodecs.optional(PacketCodecs.STRING), LocationUpdateS2CPacket::serverType,
 			PacketCodecs.optional(PacketCodecs.STRING), LocationUpdateS2CPacket::lobbyName,
 			PacketCodecs.optional(PacketCodecs.STRING), LocationUpdateS2CPacket::mode,
-			PacketCodecs.optional(PacketCodecs.STRING), LocationUpdateS2CPacket::map, LocationUpdateS2CPacket::new);
+			PacketCodecs.optional(PacketCodecs.STRING), LocationUpdateS2CPacket::map,
+			LocationUpdateS2CPacket::new
+	);
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

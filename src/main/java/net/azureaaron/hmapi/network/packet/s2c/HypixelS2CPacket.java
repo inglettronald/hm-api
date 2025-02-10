@@ -20,7 +20,7 @@ public interface HypixelS2CPacket extends HypixelPacket {
 
 		@Override
 		public Id<? extends CustomPayload> getId() {
-			//This needs to return something non null that is a packet channel we're registered to
+			// This needs to return something non-null that is a packet channel we're registered to
 			return new CustomPayload.Id<CustomPayload>(Identifier.of("hypixel", "location"));
 		}
 	};

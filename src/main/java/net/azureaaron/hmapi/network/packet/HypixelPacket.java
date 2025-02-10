@@ -11,20 +11,20 @@ import net.minecraft.util.Identifier;
 public interface HypixelPacket extends CustomPayload {
 
 	@ApiStatus.Internal
-	public record Unknown(Identifier id) implements HypixelPacket {
+    record Unknown(Identifier id) implements HypixelPacket {
 
 		public static PacketCodec<PacketByteBuf, Unknown> createPacketCodec(Identifier id) {
 			return new PacketCodec<>() {
 
 				@Override
 				public Unknown decode(PacketByteBuf buf) {
-					//Since we duplicate the buffer we don't need to read all bytes
+					// Since we duplicate the buffer, we don't need to read all bytes
 					return new Unknown(id);
 				}
 
 				@Override
 				public void encode(PacketByteBuf buf, Unknown value) {
-					//We will never encode this
+					// We will never encode this
 				}
 			};
 		}

@@ -16,8 +16,16 @@ import net.minecraft.util.Identifier;
  * @implSpec This record/packet is subject to potentially breaking changes in the future without notice as specified by Hypixel.
  */
 public record HelloS2CPacket(Environment environment) implements HypixelS2CPacket {
-	public static final CustomPayload.Id<HypixelS2CPacket> ID = new CustomPayload.Id<>(Identifier.of("hypixel", "hello"));
-	public static final PacketCodec<RegistryByteBuf, HelloS2CPacket> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.indexed(i -> Environment.values()[i], Environment::ordinal), HelloS2CPacket::environment, HelloS2CPacket::new);
+
+	public static final CustomPayload.Id<HypixelS2CPacket> ID = new CustomPayload.Id<>(
+			Identifier.of("hypixel", "hello")
+	);
+
+	public static final PacketCodec<RegistryByteBuf, HelloS2CPacket> PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.indexed(i -> Environment.values()[i], Environment::ordinal),
+			HelloS2CPacket::environment,
+			HelloS2CPacket::new
+	);
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

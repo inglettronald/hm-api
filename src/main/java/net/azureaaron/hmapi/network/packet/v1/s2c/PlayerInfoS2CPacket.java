@@ -21,12 +21,16 @@ import net.minecraft.util.Identifier;
  * @param prefix             the player's rank prefix override (Note: this may contain formatting codes)
  */
 public record PlayerInfoS2CPacket(PlayerRank playerRank, PackageRank packageRank, MonthlyPackageRank monthlyPackageRank, Optional<String> prefix) implements HypixelS2CPacket {
+
 	public static final CustomPayload.Id<HypixelS2CPacket> ID = new CustomPayload.Id<>(Identifier.of("hypixel", "player_info"));
-	public static final PacketCodec<RegistryByteBuf, PlayerInfoS2CPacket> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.indexed(PlayerRank.BY_ID, PlayerRank::id), PlayerInfoS2CPacket::playerRank,
+
+	public static final PacketCodec<RegistryByteBuf, PlayerInfoS2CPacket> PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.indexed(PlayerRank.BY_ID, PlayerRank::id), PlayerInfoS2CPacket::playerRank,
 			PacketCodecs.indexed(PackageRank.BY_ID, PackageRank::id), PlayerInfoS2CPacket::packageRank,
 			PacketCodecs.indexed(MonthlyPackageRank.BY_ID, MonthlyPackageRank::id), PlayerInfoS2CPacket::monthlyPackageRank,
 			PacketCodecs.optional(PacketCodecs.STRING), PlayerInfoS2CPacket::prefix,
-			PlayerInfoS2CPacket::new);
+			PlayerInfoS2CPacket::new
+	);
 
 	@Override
 	public Id<? extends CustomPayload> getId() {

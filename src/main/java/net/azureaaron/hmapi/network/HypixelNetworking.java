@@ -25,7 +25,12 @@ import net.minecraft.util.Util;
  * @implNote There is a global cooldown of 1 second between trying send a specific packet type. Additionally, all packet send methods should be called from the {@code Render Thread}.
  */
 public class HypixelNetworking {
-	private static final Object2ObjectMap<CustomPayload.Id<HypixelS2CPacket>, IntList> VALID_EVENTS = Util.make(new Object2ObjectOpenHashMap<>(), map -> map.put(LocationUpdateS2CPacket.ID, Util.make(new IntArrayList(), list -> list.add(1))));
+
+	private static final Object2ObjectMap<CustomPayload.Id<HypixelS2CPacket>, IntList> VALID_EVENTS = Util.make(
+			new Object2ObjectOpenHashMap<>(),
+			map -> map.put(LocationUpdateS2CPacket.ID, Util.make(new IntArrayList(), list -> list.add(1)))
+	);
+
 	static final Object2IntMap<CustomPayload.Id<HypixelS2CPacket>> REGISTERED_EVENTS = new Object2IntOpenHashMap<>();
 
 	private HypixelNetworking() {}
@@ -91,7 +96,12 @@ public class HypixelNetworking {
 			//Only register when we're on Hypixel to allow for events to be registered at mod init
 			if (Utils.isOnHypixel()) {
 				Object2IntMap<Identifier> packetsToRegisterFor = REGISTERED_EVENTS.object2IntEntrySet().stream()
-						.collect(Collectors.toMap(e -> e.getKey().id(), Object2IntMap.Entry::getIntValue, (a, b) -> a > b ? a : b, Object2IntOpenHashMap::new));
+						.collect(Collectors.toMap(
+								e -> e.getKey().id(),
+								Object2IntMap.Entry::getIntValue,
+								(a, b) -> a > b ? a : b,
+								Object2IntOpenHashMap::new
+						));
 
 				HypixelNetworkingImpl.sendPacket(new RegisterC2SPacket(1, packetsToRegisterFor), true);
 			}

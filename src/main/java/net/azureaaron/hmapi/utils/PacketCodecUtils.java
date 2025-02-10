@@ -15,12 +15,16 @@ import net.minecraft.network.codec.PacketCodec;
  */
 @ApiStatus.Internal
 public class PacketCodecUtils {
+
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	/**
 	 * @return A codec that decodes the {@link PacketByteBuf} in line with the packet format of Hypixel's Mod API and the requirements of my implementation.
 	 */
-	public static <B extends PacketByteBuf> PacketCodec<B, ? extends HypixelS2CPacket> dispatchHypixel(Int2ObjectMap<PacketCodec<B, ? extends HypixelS2CPacket>> primaryPacketCodecs, PacketCodec<B, ? extends HypixelS2CPacket> errorCodec) {
+	public static <B extends PacketByteBuf> PacketCodec<B, ? extends HypixelS2CPacket> dispatchHypixel(
+			Int2ObjectMap<PacketCodec<B, ? extends HypixelS2CPacket>> primaryPacketCodecs,
+			PacketCodec<B, ? extends HypixelS2CPacket> errorCodec
+	) {
 		return new PacketCodec<B, HypixelS2CPacket>() {
 
 			@Override

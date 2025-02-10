@@ -13,10 +13,17 @@ public class Utils {
 
 	public static boolean isOnHypixel() {
 		MinecraftClient client = MinecraftClient.getInstance();
-		String serverAddress = client.getCurrentServerEntry() != null ? client.getCurrentServerEntry().address.toLowerCase() : "";
-		String serverBrand = client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null ? client.player.networkHandler.getBrand() : "";
+		String serverAddress = client.getCurrentServerEntry() != null
+				? client.getCurrentServerEntry().address.toLowerCase()
+				: "";
+		String serverBrand = client.player != null && client.player.networkHandler != null && client.player.networkHandler.getBrand() != null
+				? client.player.networkHandler.getBrand()
+				: "";
 
-		return (!serverAddress.isEmpty() && HYPIXEL_ADDRESS_OVERRIDE.equalsIgnoreCase(serverAddress)) || serverAddress.contains("hypixel.net") || serverAddress.contains("hypixel.io") || serverBrand.contains("Hypixel BungeeCord");
+		return (!serverAddress.isEmpty() && HYPIXEL_ADDRESS_OVERRIDE.equalsIgnoreCase(serverAddress))
+				|| serverAddress.contains("hypixel.net")
+				|| serverAddress.contains("hypixel.io")
+				|| serverBrand.contains("Hypixel BungeeCord");
 	}
 
 	public static int requireInRange(int version, int min, int max) {
