@@ -1,16 +1,13 @@
 package net.azureaaron.hmapi.utils;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.packet.CustomPayload;
-import org.jetbrains.annotations.ApiStatus;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.azureaaron.hmapi.network.packet.s2c.HypixelS2CPacket;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import org.jetbrains.annotations.ApiStatus;
+import org.slf4j.Logger;
 
 /**
  * Utilities class for {@link PacketCodec PacketCodecs}.
@@ -38,7 +35,15 @@ public class PacketCodecUtils {
 					case Boolean s when s && primaryPacketCodecs != null && primaryPacketCodecs.containsKey(version) -> decodeInternal(buf, primaryPacketCodecs.get(version));
 					case Boolean s when !s -> errorCodec.decode(buf);
 
-					default -> HypixelS2CPacket.NOP;
+					default -> {
+						// When Migrating HypixelCustomPayloadCodecs to a fabric based implementation in
+						// HypixelNetworkingImpl, I accidentally had some versions swapped around. However, this had
+						// the unintended effect of surfacing a bug! the same byte reading issue presents itself when
+						// providing this packet if we don't read anything. So, we read and discard the bytes.
+						//  - Dulkir
+						readAllBytes(buf, false);
+						yield HypixelS2CPacket.NOP;
+					}
 				};
 			}
 
@@ -98,7 +103,10 @@ public class PacketCodecUtils {
 
 						case Boolean s when !s -> errorCodec.decode(buf);
 
-						default -> HypixelS2CPacket.NOP;
+						default ->  {
+							readAllBytes(buf, false);
+							yield HypixelS2CPacket.NOP;
+						}
 					};
 				} catch (Throwable t) {
 					LOGGER.error("[HM API] Encountered an unexpected exception while decoding a packet!", t);
@@ -117,6 +125,8 @@ public class PacketCodecUtils {
 
 	private static void readAllBytes(PacketByteBuf buf, boolean logWarning) {
 		buf.readerIndex(buf.writerIndex());
-		//TODO restore logging maybe
+		if (logWarning) {
+			LOGGER.info("[HM API] Discarding extra bytes for a payload.");
+		}
 	}
 }

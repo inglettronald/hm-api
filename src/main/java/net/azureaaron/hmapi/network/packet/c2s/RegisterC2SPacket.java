@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 
 public record RegisterC2SPacket(int version, Object2IntMap<Identifier> eventsToRegister) implements HypixelC2SPacket {
 
-	public static final CustomPayload.Id<RegisterC2SPacket> ID = new CustomPayload.Id<>(
+	public static final CustomPayload.Id<HypixelC2SPacket> ID = new CustomPayload.Id<>(
 			Identifier.of("hypixel", "register")
 	);
 	public static final PacketCodec<RegistryByteBuf, RegisterC2SPacket> PACKET_CODEC = PacketCodec.tuple(

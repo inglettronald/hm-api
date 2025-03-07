@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * implementing your switch statements.
  */
 public class HypixelPacketEvents {
+
 	/**
 	 * The packed passed here will either be a {@code PartyInfoS2CPacket} or an {@link ErrorS2CPacket}.
 	 */

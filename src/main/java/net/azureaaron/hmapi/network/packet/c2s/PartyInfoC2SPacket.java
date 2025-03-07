@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 
 public record PartyInfoC2SPacket(int version) implements HypixelC2SPacket {
 
-	public static final CustomPayload.Id<PartyInfoC2SPacket> ID = new CustomPayload.Id<>(
+	public static final CustomPayload.Id<HypixelC2SPacket> ID = new CustomPayload.Id<>(
 			Identifier.of("hypixel", "party_info")
 	);
 
