@@ -1,5 +1,7 @@
 package net.azureaaron.hmapi.utils;
 
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.packet.CustomPayload;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
@@ -21,7 +23,7 @@ public class PacketCodecUtils {
 	/**
 	 * @return A codec that decodes the {@link PacketByteBuf} in line with the packet format of Hypixel's Mod API and the requirements of my implementation.
 	 */
-	public static <B extends PacketByteBuf> PacketCodec<B, ? extends HypixelS2CPacket> dispatchHypixel(
+	public static <B extends RegistryByteBuf> PacketCodec<B, ? extends HypixelS2CPacket> dispatchHypixel(
 			Int2ObjectMap<PacketCodec<B, ? extends HypixelS2CPacket>> primaryPacketCodecs,
 			PacketCodec<B, ? extends HypixelS2CPacket> errorCodec
 	) {
@@ -60,7 +62,7 @@ public class PacketCodecUtils {
 		};
 	}
 
-	public static <B extends PacketByteBuf, T> PacketCodec<B, T> dispatchConditionally(PacketCodec<B, T> ifTrue, PacketCodec<B, T> ifFalse) {
+	public static <B extends RegistryByteBuf, T> PacketCodec<B, T> dispatchConditionally(PacketCodec<B, T> ifTrue, PacketCodec<B, T> ifFalse) {
 		return new PacketCodec<B, T>() {
 
 			@Override
@@ -75,8 +77,8 @@ public class PacketCodecUtils {
 			}
 		};
 	}
-	
-	public static <B extends PacketByteBuf> PacketCodec<B, ? extends HypixelS2CPacket> dispatchSafely(PacketCodec<B, ? extends HypixelS2CPacket> packetCodec, PacketCodec<B, ? extends HypixelS2CPacket> errorCodec) {
+
+	public static <B extends RegistryByteBuf> PacketCodec<B, ? extends HypixelS2CPacket> dispatchSafely(PacketCodec<B, ? extends HypixelS2CPacket> packetCodec, PacketCodec<B, ? extends HypixelS2CPacket> errorCodec) {
 		return new PacketCodec<B, HypixelS2CPacket>() {
 
 			@Override
